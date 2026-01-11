@@ -34,49 +34,17 @@
 #     relay_status = "OFF"
 #     return {"status": "Relay OFF"}
 
+from fastapi import FastAPI, Query
+from datetime import datetime, timedelta
+from sqlalchemy import desc
 
-from fastapi import FastAPI
-from pydantic import BaseModel
-from sqlalchemy import create_engine, Column, Float, Integer, String, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from datetime import datetime
-from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # For now allow all (or add your web app URL later)
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Database setup (SQLite)
-# engine = create_engine('mysql+pymysql://root:aathil12@localhost:3306/solardata')
-engine = create_engine('mysql+pymysql://root:EabGDkdNYaRXWrMoXyXqQEvivWFtPYWx@centerbeam.proxy.rlwy.net:46194/railway')
-Base = declarative_base()
-
-class BatteryData(Base):
-    __tablename__ = 'battery_data'
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    voltage = Column(Float)
-    percentage = Column(Integer)
-    current = Column(Float)
-    relay_status = Column(String(10))
-
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
 
 # Global relay status
 relay_status = "OFF"
 
-class Data(BaseModel):
-    voltage: float
-    percentage: int
-    current: float
+
 
 @app.post("/data")
 def receive_data(d: Data):
@@ -106,9 +74,6 @@ def get_latest():
         }
     return {"message": "No data available"}
 
-from fastapi import FastAPI, Query
-from datetime import datetime, timedelta
-from sqlalchemy import desc
 
 @app.get("/history")
 def get_history(
