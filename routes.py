@@ -55,7 +55,7 @@ app.add_middleware(
 
 # Database setup (SQLite)
 # engine = create_engine('mysql+pymysql://root:aathil12@localhost:3306/solardata')
-engine = create_engine('mysql://root:EabGDkdNYaRXWrMoXyXqQEvivWFtPYWx@centerbeam.proxy.rlwy.net:46194/railway')
+engine = create_engine('mysql+pymysql://root:EabGDkdNYaRXWrMoXyXqQEvivWFtPYWx@centerbeam.proxy.rlwy.net:46194/railway')
 Base = declarative_base()
 
 class BatteryData(Base):
