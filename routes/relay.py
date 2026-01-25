@@ -1,26 +1,46 @@
-# routes/relay.py
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/relay", tags=["relay"])
 
-# Global relay status (consider moving to DB/Redis later)
-relay_status = "OFF"
+# Multiple relay statuses
+relay_status = {
+    "home": "OFF",
+    "neighbour": "OFF",
+    "solar": "OFF"
+}
 
-def get_relay_status() -> str:
+def get_relay_status(relay_name: str) -> str:
+    if relay_name not in relay_status:
+        raise HTTPException(status_code=404, detail="Relay not found")
+    return relay_status[relay_name]
+
+# 🔹 Get status of all relays
+@router.get("/status")
+def all_relay_status():
     return relay_status
 
-@router.get("/status")
-def relay_status_api():
-    return {"status": relay_status}
+# 🔹 Get status of a specific relay
+@router.get("/{relay_name}/status")
+def relay_status_api(relay_name: str):
+    return {
+        "relay": relay_name,
+        "status": get_relay_status(relay_name)
+    }
 
-@router.get("/on")
-def switch_on():
-    global relay_status
-    relay_status = "ON"
-    return {"status": "Relay ON"}
+# 🔹 Turn ON a relay
+@router.get("/{relay_name}/on")
+def switch_on(relay_name: str):
+    if relay_name not in relay_status:
+        raise HTTPException(status_code=404, detail="Relay not found")
 
-@router.get("/off")
-def switch_off():
-    global relay_status
-    relay_status = "OFF"
-    return {"status": "Relay OFF"}
+    relay_status[relay_name] = "ON"
+    return {"relay": relay_name, "status": "ON"}
+
+# 🔹 Turn OFF a relay
+@router.get("/{relay_name}/off")
+def switch_off(relay_name: str):
+    if relay_name not in relay_status:
+        raise HTTPException(status_code=404, detail="Relay not found")
+
+    relay_status[relay_name] = "OFF"
+    return {"relay": relay_name, "status": "OFF"}

@@ -29,18 +29,18 @@ def receive_data(data: BatteryDataCreate, db: Session = Depends(get_db)):
     
     return {"message": "Data received"}
 
-@router.get("/latest", response_model=BatteryDataResponse)
+@router.get("/latest")
 def get_latest(db: Session = Depends(get_db)):
     latest = db.query(BatteryData)\
               .order_by(BatteryData.timestamp.desc())\
               .first()
-    
+
     if not latest:
         return {"message": "No data available"}
-        
+
     return {
         "voltage": latest.voltage,
         "percentage": latest.percentage,
         "current": latest.current,
-        "relay": latest.relay_status
+        "relay": get_relay_status()  # 🔥 LIVE STATE
     }

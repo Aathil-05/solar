@@ -1,7 +1,7 @@
 # models.py
 from sqlalchemy import Column, Integer, Float, String, DateTime
 from datetime import datetime
-from database import Base
+from mysql import Base
 
 class BatteryData(Base):
     __tablename__ = "battery_data"
