@@ -3,44 +3,50 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 from models import BatteryData
-from schemas import BatteryDataCreate, BatteryDataResponse
+from schemas import BatteryDataCreate
 from routes.relay import all_relay_status
 
 router = APIRouter(prefix="/data", tags=["data"])
 
 @router.post("/", response_model=dict)
 def receive_data(data: BatteryDataCreate, db: Session = Depends(get_db)):
-    current_relay = get_relay_status()
-    
+    relays = all_relay_status()
+
     new_entry = BatteryData(
         voltage=data.voltage,
         percentage=data.percentage,
         current=data.current,
-        relay_status=current_relay
+        relay_home=relays["home"],
+        relay_neighbour=relays["neighbour"],
+        relay_solar=relays["solar"],
     )
-    
+
     db.add(new_entry)
     db.commit()
-    
-    print(f"Battery Voltage: {data.voltage}")
-    print(f"Battery %: {data.percentage}")
-    print(f"Current: {data.current}")
-    print(f"Relay: {current_relay}")
-    
-    return {"message": "Data received"}
+
+    return {"message": "Data received successfully"}
 
 @router.get("/latest")
 def get_latest(db: Session = Depends(get_db)):
-    latest = db.query(BatteryData)\
-              .order_by(BatteryData.timestamp.desc())\
-              .first()
+    latest = (
+        db.query(BatteryData)
+        .order_by(BatteryData.timestamp.desc())
+        .first()
+    )
 
-    # if not latest:
-    #     return {}
+    relays = all_relay_status()  # LIVE STATE
+
+    if not latest:
+        return {
+            "voltage": 0,
+            "percentage": 0,
+            "current": 0,
+            "relay": relays
+        }
 
     return {
         "voltage": latest.voltage,
         "percentage": latest.percentage,
         "current": latest.current,
-        "relay": all_relay_status()  # 🔥 LIVE STATE
+        "relay": relays
     }

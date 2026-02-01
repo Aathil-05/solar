@@ -9,8 +9,8 @@ router = APIRouter(prefix="/history", tags=["history"])
 
 @router.get("/", response_model=list[dict])
 def get_history(
-    hours: int = Query(0, description="Last N hours"),
-    days: int = Query(0, description="Last N days"),
+    hours: int = Query(0),
+    days: int = Query(0),
     db: Session = Depends(get_db)
 ):
     now = datetime.utcnow()
@@ -29,16 +29,17 @@ def get_history(
         .all()
     )
 
-    if not data:
-        return []
-
     return [
         {
             "timestamp": d.timestamp.isoformat(),
             "voltage": round(d.voltage, 2),
             "current": round(d.current, 2),
-            "sharing_power": round(d.voltage * d.current, 2) if d.relay_status == "ON" else 0.0,
-            "percentage": d.percentage
+            "percentage": d.percentage,
+
+            # 🔥 SHARE POWER ONLY IF NEIGHBOUR RELAY IS ON
+            "sharing_power": round(d.voltage * d.current, 2)
+            if d.relay_neighbour == "ON"
+            else 0.0
         }
         for d in data
     ]
