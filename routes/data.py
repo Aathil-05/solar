@@ -10,7 +10,8 @@ router = APIRouter(prefix="/data", tags=["data"])
 
 @router.post("/", response_model=dict)
 def receive_data(data: BatteryDataCreate, db: Session = Depends(get_db)):
-    relays = all_relay_status()
+
+    relays = all_relay_status()  # {"home": "OFF", "neighbour": "OFF", "solar": "OFF"}
 
     new_entry = BatteryData(
         voltage=data.voltage,
@@ -23,8 +24,16 @@ def receive_data(data: BatteryDataCreate, db: Session = Depends(get_db)):
 
     db.add(new_entry)
     db.commit()
+    db.refresh(new_entry)
 
-    return {"message": "Data received successfully"}
+    # 🔥 RETURN RELAY DATA TO ESP32
+    return {
+        "voltage": data.voltage,
+        "percentage": data.percentage,
+        "current": data.current,
+        "relay": relays
+    }
+
 
 @router.get("/latest")
 def get_latest(db: Session = Depends(get_db)):
