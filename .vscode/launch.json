@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+
+            "env": {
+                "DB_USER": "root",
+                "DB_PASS": "your_mysql_password",
+                "DB_HOST": "localhost",
+                "DB_NAME": "your_database_name"
+            }
+        }
+    ]
+}

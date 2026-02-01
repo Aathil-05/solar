@@ -35,8 +35,8 @@ def get_latest(db: Session = Depends(get_db)):
               .order_by(BatteryData.timestamp.desc())\
               .first()
 
-    if not latest:
-        return {}
+    # if not latest:
+    #     return {}
 
     return {
         "voltage": latest.voltage,
