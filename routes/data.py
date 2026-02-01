@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import BatteryData
 from schemas import BatteryDataCreate, BatteryDataResponse
-from routes.relay import get_relay_status
+from routes.relay import all_relay_status
 
 router = APIRouter(prefix="/data", tags=["data"])
 
@@ -36,11 +36,11 @@ def get_latest(db: Session = Depends(get_db)):
               .first()
 
     if not latest:
-        return {"message": "No data available"}
+        return {}
 
     return {
         "voltage": latest.voltage,
         "percentage": latest.percentage,
         "current": latest.current,
-        "relay": get_relay_status()  # 🔥 LIVE STATE
+        "relay": all_relay_status()  # 🔥 LIVE STATE
     }
