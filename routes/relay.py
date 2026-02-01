@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import json
+from routes.relay_ws import clients
 
 router = APIRouter(prefix="/relay", tags=["relay"])
 
