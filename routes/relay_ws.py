@@ -6,12 +6,15 @@ router = APIRouter()
 clients: list[WebSocket] = []
 
 @router.websocket("/ws/relay")
-async def relay_ws(websocket: WebSocket):
-    await websocket.accept()
-    clients.append(websocket)
+async def websocket_endpoint(ws: WebSocket):
+    await ws.accept()
+    clients.append(ws)
+
+    # 🔁 Send current relay state immediately
+    await ws.send_text(json.dumps({"relay": relay_status}))
 
     try:
         while True:
-            await websocket.receive_text()  # keep alive
-    except WebSocketDisconnect:
-        clients.remove(websocket)
+            await ws.receive_text()
+    except:
+        clients.remove(ws)
