@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from mysql import engine
 from models import Base
 from routes import data, history, relay, health
+from apscheduler.schedulers.background import BackgroundScheduler
+from ml.auto_job import auto_ml_job
 
 app = FastAPI(title="Solar Highway Battery Monitoring API")
 
@@ -20,6 +22,19 @@ app.include_router(data.router)
 app.include_router(history.router)
 app.include_router(relay.router)
 app.include_router(health.router)
+
+scheduler = BackgroundScheduler(timezone="Asia/Kolkata")
+
+@app.on_event("startup")
+def start_scheduler():
+    scheduler.add_job(
+        auto_ml_job,
+        trigger="cron",
+        minute=0   # runs at HH:00 every hour
+    )
+    scheduler.start()
+    print("✅ ML Automation Started (every hour)")
+
 
 @app.get("/")
 def root():

@@ -1,1 +1,9 @@
+# Environment files
 .env
+
+# Firebase credentials
+firebase_key.json
+
+# Python
+__pycache__/
+*.pyc
