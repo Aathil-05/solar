@@ -12,11 +12,10 @@ def apply_energy_decision(
         relay_status["neighbour"] = "ON"
 
         send_topic_notification(
-            title="☀️ Energy Sharing Started",
+            title="Energy Sharing Started",
             body=(
                 "No rain expected tomorrow.\n"
-                f"Avg Temp: {avg_temp}°C\n"
-                "Energy is now shared with neighbours."
+                f"Avg Temp: {avg_temp}°C"
             )
         )
 
@@ -24,10 +23,9 @@ def apply_energy_decision(
         relay_status["neighbour"] = "OFF"
 
         send_topic_notification(
-            title="🌧️ Energy Sharing Stopped",
+            title="Energy Sharing Stopped",
             body=(
                 "Rain expected tomorrow.\n"
-                f"Avg Humidity: {avg_humidity}%\n"
-                "Energy saved for home."
+                f"Avg Humidity: {avg_humidity}%"
             )
         )

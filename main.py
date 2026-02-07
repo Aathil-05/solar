@@ -6,6 +6,7 @@ from models import Base
 from routes import data, history, relay, health
 from apscheduler.schedulers.background import BackgroundScheduler
 from ml.auto_job import auto_ml_job
+from firebase import firebase_service
 
 app = FastAPI(title="Solar Highway Battery Monitoring API")
 
@@ -22,6 +23,7 @@ app.include_router(data.router)
 app.include_router(history.router)
 app.include_router(relay.router)
 app.include_router(health.router)
+app.include_router(firebase_service.router)
 
 scheduler = BackgroundScheduler(timezone="Asia/Kolkata")
 
@@ -34,6 +36,7 @@ def start_scheduler():
     )
     scheduler.start()
     print("✅ ML Automation Started (every hour)")
+
 
 
 @app.get("/")

@@ -2,6 +2,9 @@ import os
 import firebase_admin
 from firebase_admin import credentials, messaging
 from dotenv import load_dotenv
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/notification", tags=["notification"])
 
 load_dotenv()
 
@@ -18,10 +21,17 @@ if not firebase_admin._apps:
 
 def send_topic_notification(title: str, body: str, topic="energy_updates"):
     message = messaging.Message(
-        notification=messaging.Notification(
-            title=title,
-            body=body
-        ),
+        data={
+            "title": title,
+            "body": body,
+            "type": "energy"
+        },
         topic=topic
     )
     messaging.send(message)
+
+
+@router.post("/")
+def send_demo_notification():
+    send_topic_notification("Test", "Test notification")
+    return {"status": "sent"}

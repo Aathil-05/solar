@@ -1,15 +1,12 @@
 import requests
 import pandas as pd
 from datetime import datetime, timedelta, timezone
-
-# ⚠️ Put your OpenWeather values here
-BASE_URL = "https://api.openweathermap.org/data/2.5/"
-API_KEY = "YOUR_OPENWEATHER_API_KEY"
+from config import OPENWEATHER_BASE_URL, OPENWEATHER_API_KEY
 
 
 # ---------- CURRENT WEATHER ----------
 def get_current_weather(city: str) -> dict:
-    url = f"{BASE_URL}weather?q={city}&appid={API_KEY}&units=metric"
+    url = f"{OPENWEATHER_BASE_URL}weather?q={city}&appid={OPENWEATHER_API_KEY}&units=metric"
     res = requests.get(url, timeout=10)
     data = res.json()
 
@@ -30,7 +27,7 @@ def get_current_weather(city: str) -> dict:
 
 # ---------- TOMORROW WEATHER (3-HOUR INTERVALS) ----------
 def get_tomorrow_weather(city: str) -> list:
-    url = f"{BASE_URL}forecast?q={city}&appid={API_KEY}&units=metric"
+    url = f"{OPENWEATHER_BASE_URL}forecast?q={city}&appid={OPENWEATHER_API_KEY}&units=metric"
     res = requests.get(url, timeout=10)
     data = res.json()
 
