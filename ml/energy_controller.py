@@ -8,7 +8,6 @@ def apply_energy_decision(
     tomorrow_rain: int
 ):
     if decision == "START":
-        relay_status["solar"] = "ON"
         relay_status["neighbour"] = "ON"
 
         send_topic_notification(

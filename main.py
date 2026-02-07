@@ -35,7 +35,6 @@ def start_scheduler():
         minute=0   # runs at HH:00 every hour
     )
     scheduler.start()
-    print("✅ ML Automation Started (every hour)")
 
 
 

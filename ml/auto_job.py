@@ -26,4 +26,3 @@ def auto_ml_job():
         tomorrow_rain=tomorrow_rain
     )
 
-    print(f"[AUTO-ML] Decision={decision}")
