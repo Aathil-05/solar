@@ -2,7 +2,7 @@ from ml.ml_loader import RAIN_MODEL, LABEL_ENCODER, FEATURE_ORDER
 from ml.weather_utils import get_tomorrow_weather, prepare_tomorrow_df
 from ml.energy_controller import apply_energy_decision
 
-CITY = "ramanathapuram"
+CITY = "tiruchirappalli"
 
 def auto_ml_job():
     tomorrow_weather = get_tomorrow_weather(CITY)
